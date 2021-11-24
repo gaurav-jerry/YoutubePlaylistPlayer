@@ -1,6 +1,5 @@
 
 import {useEffect, useState, useRef} from 'react'
-import 'font-awesome/css/font-awesome.min.css';
 import axios from 'axios';
 import YouTube from 'react-youtube';
 import './App.css';
