@@ -4,6 +4,8 @@ import axios from 'axios';
 import YouTube from 'react-youtube';
 import './App.css';
 import { FaGooglePlay } from 'react-icons/fa';
+import { BsShuffle } from 'react-icons/bs';
+import Header from './Header';
 //import playIcon from './images/'
 
 function App() {
@@ -15,9 +17,13 @@ function App() {
      axios({
       url: 'https://www.googleapis.com/youtube/v3/playlistItems?part=snippet%2CcontentDetails&maxResults=200&playlistId=PLcjXjwgJpOzZoOYXz8y3I2PE_HspGkUry&key=AIzaSyA43Saqt5kUkQwm-BV_tWWwgA8HP5bwbXE',
       method: 'get'
-    }).then(response => setsongs(response.data.items));
+    }).then(response => {
+      setsongs(response.data.items);
+    //  c
+    });
     // to do play song after on e finish
   }, []);
+
 
   const opts = {
     height: '500',
@@ -34,12 +40,20 @@ function App() {
   }
 
   console.log(songs);
+
+  const onShuffleClick = () => {
+    const randomIndex = Math.floor((Math.random() * songs.length));
+    setcurrentPlaying(songs[randomIndex]);
+  }
+
   return (
     <div className = {'app-wrapper'}> 
+    {/* <Header /> */}
+    <div className = 'shuffle-btn' onClick = {onShuffleClick} ><BsShuffle /></div>
     <div ref={myRef} >
     {currentPlaying && <YouTube videoId={currentPlaying.contentDetails.videoId} opts={opts} />}
     </div>
-    
+
     <div className = {'list-container'}>
       {songs.map(item => <div key  = {item.id}>{
         item.snippet.thumbnails.default && 
