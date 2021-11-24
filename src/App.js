@@ -17,7 +17,7 @@ function App() {
       url: 'https://www.googleapis.com/youtube/v3/playlistItems?part=snippet%2CcontentDetails&maxResults=200&playlistId=PLcjXjwgJpOzZoOYXz8y3I2PE_HspGkUry&key=AIzaSyA43Saqt5kUkQwm-BV_tWWwgA8HP5bwbXE',
       method: 'get'
     }).then(response => setsongs(response.data.items));
-    //console.log(songs);
+    // to do play song after on e finish
   }, []);
 
   const opts = {
