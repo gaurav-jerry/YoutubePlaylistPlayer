@@ -5,7 +5,7 @@ import YouTube from 'react-youtube';
 import './App.css';
 import { FaGooglePlay } from 'react-icons/fa';
 import { BsShuffle } from 'react-icons/bs';
-import Header from './Header';
+//import Header from './Header';
 //import playIcon from './images/'
 
 function App() {
