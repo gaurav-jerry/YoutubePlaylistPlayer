@@ -7,6 +7,7 @@ import { FaGooglePlay } from 'react-icons/fa';
 import { BsShuffle } from 'react-icons/bs';
 import {AiFillPauseCircle} from 'react-icons/ai'
 import Header from './Header';
+import Suggestion from './Suggestion';
 
 function App() {
   const [songs, setsongs] = useState([]);
@@ -67,6 +68,7 @@ function App() {
     <div className = {'app-wrapper'}> 
     <Header />
     <div  title = {'Shuffle Playlist'} className = 'shuffle-btn' onClick = {onShuffleClick} ><BsShuffle /></div>
+    <Suggestion />
     <div ref={myRef} >
     {currentPlaying && <YouTube  onPause={() => setIsPaused(true)} onPlay={() => setIsPaused(false)} onEnd={onVideoEnd} videoId={currentPlaying.contentDetails.videoId} opts={opts} />}
     </div>
@@ -81,6 +83,7 @@ function App() {
         </div>
         }</div>)}
     </div>
+    
     </div>
   );
 }
