@@ -178,3 +178,6 @@ body {
 .disabled{
   background: #dcdcdc;
 }
+.sugg-textArea{
+  width: 100%;
+}

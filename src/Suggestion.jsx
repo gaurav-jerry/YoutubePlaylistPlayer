@@ -29,7 +29,7 @@ const  sendEmail = (e) =>{
         openSuggestion ? <div className = 'suggestion-feedback suggestion-input-box'>
             <div className = 'form-area'>
                 <label>Share your songs :)</label>
-            <textarea placeholder = 'share link from youtube/spotify/wynk...' rows="5" cols="40" value = {suggestionText} 
+            <textarea className = 'sugg-textArea' placeholder = 'share link from youtube/spotify/wynk...' rows="5" value = {suggestionText} 
             onChange = {(e) => setsuggestionText(e.target.value)} />
             <div className = 'suggestion-action-btn'>
             <div className = {`submit-btn ${!suggestionText && 'disabled'}` } onClick = {suggestionText && sendEmail}>Submit</div>
