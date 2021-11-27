@@ -50,6 +50,7 @@ body {
   align-items: center;
   margin-top: 10px;
   /* border-bottom: 1px solid #dcdcdc; */
+  cursor: pointer;
 }
 .list-item-action-btn {
   margin-left: auto;
@@ -71,8 +72,29 @@ body {
     align-items: center;
     justify-content: center;
     font-weight: 500;
-    position: absolute;
+    position: fixed;
     bottom: 25px;
     right: 25px;
     cursor: pointer;
+}
+.headerWrapper {
+  height: 54px;
+  display: flex;
+  padding: 0px 14px;
+  align-items: center;
+  justify-content: space-between;
+  background: rgba(0,0,0,0.5);
+  /* color: black; */
+  font-size: 1.4em;
+  font-weight: 500;
+}
+.currentPlaying{
+  background: rgba(0, 0, 0, 0.5);
+}
+.logoContainer {
+  display: flex;
+    align-items: center;
+    width: 145px;
+    align-items: center;
+    justify-content: space-around;
 }

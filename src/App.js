@@ -5,12 +5,13 @@ import YouTube from 'react-youtube';
 import './App.css';
 import { FaGooglePlay } from 'react-icons/fa';
 import { BsShuffle } from 'react-icons/bs';
-//import Header from './Header';
-//import playIcon from './images/'
+import {AiFillPauseCircle} from 'react-icons/ai'
+import Header from './Header';
 
 function App() {
   const [songs, setsongs] = useState([]);
   const [currentPlaying, setcurrentPlaying] = useState(null);
+  const [isPaused, setIsPaused] = useState(false);
   const myRef = useRef(null);
 
   useEffect(() => {
@@ -46,21 +47,37 @@ function App() {
     setcurrentPlaying(songs[randomIndex]);
   }
 
+  const onVideoEnd = () => {
+    const idx = songs.findIndex((song) => {
+      return song.id === currentPlaying.id
+    })
+    if(songs.length >=idx){
+      setcurrentPlaying(songs[idx+1])
+    }
+  }
+
+  const getActionIcon = (id) => {
+    if(currentPlaying && currentPlaying.id === id && !isPaused){
+      return <AiFillPauseCircle/>
+    }
+    return <FaGooglePlay/>
+  }
+
   return (
     <div className = {'app-wrapper'}> 
-    {/* <Header /> */}
-    <div className = 'shuffle-btn' onClick = {onShuffleClick} ><BsShuffle /></div>
+    <Header />
+    <div  title = {'Shuffle Playlist'} className = 'shuffle-btn' onClick = {onShuffleClick} ><BsShuffle /></div>
     <div ref={myRef} >
-    {currentPlaying && <YouTube videoId={currentPlaying.contentDetails.videoId} opts={opts} />}
+    {currentPlaying && <YouTube  onPause={() => setIsPaused(true)} onPlay={() => setIsPaused(false)} onEnd={onVideoEnd} videoId={currentPlaying.contentDetails.videoId} opts={opts} />}
     </div>
 
     <div className = {'list-container'}>
       {songs.map(item => <div key  = {item.id}>{
         item.snippet.thumbnails.default && 
-        <div className = {'List-Item'}>
+        <div  onClick = {() => onPlayBtnClick(item)} className = {`List-Item ${currentPlaying?.id === item.id  && 'currentPlaying'}`}>
           <img alt = 'video-thumbnail'  src = {item.snippet.thumbnails.default.url} />
           <div className = {'list-title'}>{item.snippet.title}</div>
-          <div className = {'list-item-action-btn'}  onClick = {() => onPlayBtnClick(item)}><FaGooglePlay/></div>
+          <div className = {'list-item-action-btn'}>{getActionIcon(item.id)}</div>
         </div>
         }</div>)}
     </div>
