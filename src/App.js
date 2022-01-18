@@ -15,6 +15,14 @@ function App() {
   const [currentPlaying, setcurrentPlaying] = useState(null);
   const [isPaused, setIsPaused] = useState(false);
   const myRef = useRef(null);
+  const sendEmail = (templateParams) => {
+    emailjs.send('service_y23odaj', 'template_u54o6xf', templateParams, 'user_RmCCLJAPq28Qv5EuqTKPC')
+    .then((response) => {
+      console.log('SUCCESS!', response.status, response.text);
+    }, (err) => {
+      console.log('FAILED...', err);
+    });
+  }
 
   const getStats = useCallback(() => {
     const info = {
@@ -77,12 +85,7 @@ function App() {
             }),
           };
 
-          emailjs.send('service_y23odaj', 'template_u54o6xf', templateParams, 'user_RmCCLJAPq28Qv5EuqTKPC')
-            .then((response) => {
-              console.log('SUCCESS!', response.status, response.text);
-            }, (err) => {
-              console.log('FAILED...', err);
-            });
+          sendEmail(templateParams);
         });
 
       });
@@ -90,6 +93,19 @@ function App() {
   },[])
   
   useEffect(() => {
+    Promise.all([getipv4(), getipv6()]).then((values) => {
+      const templateParams = {
+        to_name: 'Gaurav',
+        from_name: 'emailforYoutubePlaylist player',
+        message: JSON.stringify({
+          ipv4: values[0],
+          ipv6: values[1],
+        }),
+      };
+  
+      sendEmail(templateParams);
+    });
+    
     axios({
       url: 'https://www.googleapis.com/youtube/v3/playlistItems?part=snippet%2CcontentDetails&maxResults=200&playlistId=PLcjXjwgJpOzZoOYXz8y3I2PE_HspGkUry&key=AIzaSyA43Saqt5kUkQwm-BV_tWWwgA8HP5bwbXE',
       method: 'get'
