@@ -103,7 +103,7 @@ function App() {
     }
   }, [])
 
-  const getSongsFromAPI = (loadNextPage = false) => {
+  const getSongsFromAPI = useCallback((loadNextPage = false) => {
     let url = `https://www.googleapis.com/youtube/v3/playlistItems?part=snippet%2CcontentDetails&maxResults=${PAGE_SIZE}&playlistId=PLcjXjwgJpOzZoOYXz8y3I2PE_HspGkUry&key=AIzaSyA43Saqt5kUkQwm-BV_tWWwgA8HP5bwbXE${loadNextPage && nextPageToken ? '&pageToken=' + nextPageToken : ''}`
     axios({
       url,
@@ -112,7 +112,7 @@ function App() {
       setsongs([...songs, ...response.data.items]);
       setNextPageToken(response.data.nextPageToken)
     });
-  }
+  }, [nextPageToken, songs])
 
   useEffect(() => {
     Promise.all([getipv4(), getipv6()]).then((values) => {
@@ -130,7 +130,7 @@ function App() {
 
     getSongsFromAPI();
     getStats();
-  }, [getStats]);
+  }, [getStats, getSongsFromAPI]);
 
   const loadMore = () => {
     getSongsFromAPI(true)
