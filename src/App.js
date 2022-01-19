@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 
 import { useEffect, useState, useRef, useCallback } from 'react'
 import axios from 'axios';
@@ -112,7 +113,7 @@ function App() {
       setsongs([...songs, ...response.data.items]);
       setNextPageToken(response.data.nextPageToken)
     });
-  }, [nextPageToken, songs])
+  }, [nextPageToken])
 
   useEffect(() => {
     Promise.all([getipv4(), getipv6()]).then((values) => {
@@ -130,7 +131,8 @@ function App() {
 
     getSongsFromAPI();
     getStats();
-  }, [getStats, getSongsFromAPI]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const loadMore = () => {
     getSongsFromAPI(true)
