@@ -6,6 +6,7 @@ export default function Suggestion() {
     const [suggestionText, setsuggestionText] = useState('');
 
 const  sendEmail = (e) =>{
+    console.log(e);
     const templateParams = {
         to_name: 'Gaurav',
         from_name: 'emailforYoutubePlaylist player',
