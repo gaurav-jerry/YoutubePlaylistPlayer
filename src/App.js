@@ -30,7 +30,7 @@ function App() {
 
   const trackScrolling = (onBottom) => {
     window.onscroll = function (ev) {
-      if (parseInt(window.innerHeight + window.scrollY) >= document.body.offsetHeight) {
+      if (parseInt(window.innerHeight + window.scrollY) >= document.body.offsetHeight-20) {
         onBottom();
       }
     };
